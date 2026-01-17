@@ -1,69 +1,30 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>AI Chat</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-    h2 {
-      color: #333;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #reply {
-      margin-top: 20px;
-      background: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      min-height: 50px;
-    }
-  </style>
+  <title>IT Savodxonlik AI</title>
 </head>
 <body>
 
-  <h2>Sun’iy intellekt bilan suhbat</h2>
+<h2>IT Savodxonlik bo‘yicha savol bering</h2>
 
-  <textarea id="message" placeholder="Savolingizni yozing..."></textarea><br>
-  <button onclick="sendMessage()">Yuborish</button>
+<textarea id="q" rows="4" cols="50" placeholder="Masalan: Word’da jadval qanday qilinadi?"></textarea><br><br>
+<button onclick="ask()">Savol berish</button>
 
-  <div id="reply"></div>
+<p id="a"></p>
 
-  <script>
-    async function sendMessage() {
-      const msg = document.getElementById("message").value;
-      document.getElementById("reply").innerHTML = "⏳ Kuting...";
-
-      try {
-        const res = await fetch("/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: msg })
-        });
-
-        const data = await res.json();
-        document.getElementById("reply").innerHTML =
-          "<b>Javob:</b><br>" + (data.reply || "Javob kelmadi");
-      } catch (e) {
-        document.getElementById("reply").innerHTML = "❌ Xatolik yuz berdi";
-      }
-    }
-  </script>
+<script>
+async function ask() {
+  document.getElementById("a").innerText = "Kuting...";
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: document.getElementById("q").value })
+  });
+  const data = await res.json();
+  document.getElementById("a").innerText = data.answer;
+}
+</script>
 
 </body>
 </html>
