@@ -1,11 +1,19 @@
 import express from "express";
 import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 const app = express();
 app.use(express.json());
 
+// 👇 HTML fayllarni ko‘rsatish uchun
+app.use(express.static(__dirname));
+
 app.get("/", (req, res) => {
-  res.send("server ishlayapti");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.post("/chat", async (req, res) => {
@@ -19,9 +27,7 @@ app.post("/chat", async (req, res) => {
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
-      messages: [
-        { role: "user", content: userMessage }
-      ]
+      messages: [{ role: "user", content: userMessage }]
     })
   });
 
