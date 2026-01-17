@@ -1,18 +1,35 @@
 import express from "express";
+import fetch from "node-fetch";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Server ishlayapti ✅");
+  res.send("server ishlayapti");
 });
 
-/* 👇 MANA SHU YERGA QO‘SHASIZ */
-app.get("/test", (req, res) => {
-  res.json({ status: "API ishlayapti", ok: true });
-});
-/* 👆 MANA SHU YERGA QO‘SHASIZ */
+app.post("/chat", async (req, res) => {
+  const userMessage = req.body.message;
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": Bearer ${process.env.OPENAI_API_KEY}
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "user", content: userMessage }
+      ]
+    })
+  });
+
+  const data = await response.json();
+  res.json({ reply: data.choices[0].message.content });
+});
+
+const port = process.env.PORT || 10000;
+app.listen(port, () => {
+  console.log("Server running on port " + port);
 });
