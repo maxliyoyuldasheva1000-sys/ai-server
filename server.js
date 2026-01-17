@@ -1,18 +1,28 @@
 import express from "express";
 import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 const app = express();
 app.use(express.json());
 
+// HTML faylni ko‘rsatish
+app.use(express.static(__dirname));
+
+// Bosh sahifa — index.html
 app.get("/", (req, res) => {
-  res.send("IT savodxonlik AI server ishlayapti");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// AI chat endpoint
 app.post("/chat", async (req, res) => {
   try {
     const question = req.body.message;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,25 +33,16 @@ app.post("/chat", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "Sen IT savodxonligi o‘qituvchisisan. Word, Excel, Windows va kompyuter bo‘yicha sodda va tushunarli javob ber."
+            content: "Sen IT savodxonligi o‘qituvchisisan. Word, Excel, Windows bo‘yicha sodda va tushunarli javob ber."
           },
-          {
-            role: "user",
-            content: question
-          }
+          { role: "user", content: question }
         ]
       })
     });
 
-    const data = await response.json();
+    const data = await r.json();
     res.json({ answer: data.choices[0].message.content });
-
   } catch (e) {
-    res.status(500).json({ error: "AI xatolik berdi" });
+    res.status(500).json({ error: "AI xato berdi" });
   }
-});
-
-const port = process.env.PORT || 10000;
-app.listen(port, () => {
-  console.log("Server running on port " + port);
 });
