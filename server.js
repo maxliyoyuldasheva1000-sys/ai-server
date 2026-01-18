@@ -17,7 +17,7 @@ app.post("/ai", async (req, res) => {
       {
         method: "POST",
         headers: {
-          "Authorization": Bearer ${process.env.OPENAI_API_KEY},
+          "Authorization": "Bearer " + process.env.OPENAI_API_KEY,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -26,7 +26,7 @@ app.post("/ai", async (req, res) => {
             {
               role: "system",
               content:
-                "Sen IT savodxonligi bo‘yicha universal o‘qituvchisan. Word, Excel, PowerPoint, Access, IP manzillar, HTML, Python, JavaScript va sun’iy intellekt bo‘yicha savollarga faqat o‘zbekcha, oddiy va bosqichma-bosqich javob ber."
+                "Sen IT savodxonligi bo‘yicha universal o‘qituvchisan. Word, Excel, PowerPoint, Access, IP, HTML, Python, JavaScript va sun’iy intellekt bo‘yicha faqat o‘zbekcha, oddiy javob ber."
             },
             { role: "user", content: userText }
           ]
@@ -36,8 +36,8 @@ app.post("/ai", async (req, res) => {
 
     const data = await response.json();
     res.json({ answer: data.choices[0].message.content });
-  } catch (e) {
-    res.status(500).json({ error: "AI xatosi" });
+  } catch (err) {
+    res.status(500).json({ error: "AI ishlamadi" });
   }
 });
 
